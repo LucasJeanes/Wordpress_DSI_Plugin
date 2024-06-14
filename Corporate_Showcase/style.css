@@ -1,0 +1,28 @@
+.corporate-partners {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.partner-tile {
+    width: 200px;
+    border: 1px solid #ccc;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.partner-tile img {
+    max-width: 100%;
+    height: auto;
+}
+
+.partner-tile h3 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.partner-tile p {
+    font-size: 14px;
+    color: #555;
+}
