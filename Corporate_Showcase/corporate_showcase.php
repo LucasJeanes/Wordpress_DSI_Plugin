@@ -132,8 +132,10 @@ function ccp_display_partners($atts) {
     foreach ($partners as $partner) {
         $output .= '<div class="partner-tile">';
         $output .= '<img src="' . esc_url($partner['logo']) . '" alt="' . esc_attr($partner['name']) . '" />';
+        $output .= '<div class="partner-info">';
         $output .= '<h3>' . esc_html($partner['name']) . '</h3>';
         $output .= '<p>' . esc_html($partner['description']) . '</p>';
+        $output .= '</div>';
         $output .= '</div>';
     }
     $output .= '</div>';
@@ -143,7 +145,7 @@ add_shortcode('corporate_partners', 'ccp_display_partners');
 
 // Enqueue styles
 function ccp_enqueue_styles() {
-    wp_enqueue_style('ccp-styles', plugin_dir_url(__FILE__) . 'css/style.css');
+    wp_enqueue_style('ccp-styles', plugin_dir_url(__FILE__) . 'css/style.css', rand(111,9999), 'all' );
 }
 add_action('wp_enqueue_scripts', 'ccp_enqueue_styles');
 ?>

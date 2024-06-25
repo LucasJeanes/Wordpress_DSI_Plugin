@@ -1,0 +1,62 @@
+/*
+Theme Name: SF TEST
+Version: 1.0.1
+*/
+
+.corporate-partners {
+    max-width: 100%;
+    max-width: 100%;
+    width: auto;
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) );
+    justify-content: center;
+    grid-gap: 2rem;
+    background-color: grey;
+    padding: 2%;
+}
+
+.partner-tile {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+
+.partner-tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.partner-tile img {
+    margin-top: 2%;
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    margin-bottom: 2%;
+}
+
+.partner-info {
+    width: 100%;
+    text-align: center;
+    padding: 2%;
+}
+
+.partner-info h3 {
+    font-size: 24px;
+    margin: 0 0 10px;
+}
+
+.partner-info p {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+    padding: 2%;
+}
+
+
