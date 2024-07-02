@@ -12,6 +12,52 @@ define('database_USER', 'root');
 define('database_PASSWORD', '');
 define('database_HOST', 'localhost');
 
+add_action('admin_menu', 'dsiregister_donation_bar_settings_page');
+
+function dsiregister_donation_bar_settings_page() {
+    add_menu_page(
+        'DSI Donation Bar Settings',
+        'Donation Bar',
+        'manage_options',
+        'dsi-donation-bar',
+        'dsi_donation_bar_settings_page',
+        'dashicons-admin-generic'
+    );
+
+	// Register settings
+    add_action('admin_init', 'dsi_register_settings');
+}
+
+// Function to register settings
+function dsi_register_settings() {
+    register_setting('dsi-donation-bar-settings-group', 'dsi_fundraiser_name');
+    register_setting('dsi-donation-bar-settings-group', 'dsi_target_amount');
+}
+
+// Settings page content
+function dsi_donation_bar_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>DSI Donation Bar Settings</h1>
+        <form method="post" action="options.php">
+            <?php settings_fields('dsi-donation-bar-settings-group'); ?>
+            <?php do_settings_sections('dsi-donation-bar-settings-group'); ?>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">Fundraiser Name</th>
+                    <td><input type="text" name="dsi_fundraiser_name" value="<?php echo esc_attr(get_option('dsi_fundraiser_name')); ?>" /></td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Target Amount</th>
+                    <td><input type="number" name="dsi_target_amount" value="<?php echo esc_attr(get_option('dsi_target_amount')); ?>" /></td>
+                </tr>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+    <?php
+}
+
 // Connect to the donations database
 function connect_to_donations_db() {
 		$connection = new mysqli(database_HOST, database_USER, database_PASSWORD, database_NAME);
@@ -39,15 +85,16 @@ function get_total_donations() {
 
 // Display the donation ticker
 function display_donation_ticker() {
-	 $total_donations = get_total_donations();
-	 $goal = 5000; // Example goal
-	 $percentage = ($total_donations / $goal) * 100;
+	$fundraiser_name = get_option('dsi_fundraiser_name', 'Default Fundraiser');
+	$total_donations = get_total_donations();
+	$goal = get_option('dsi_target_amount', 5000); // Default goal is 5000 if not set
+	$percentage = ($total_donations / $goal) * 100;
 	if ($percentage > 100) $percentage = 100;
 	
 	ob_start();
 		?>
 		<div id="donation-ticker">
-			<h3>Ice Cream Fundays</h3>
+		<h3><?php echo esc_html($fundraiser_name); ?></h3>
 			<container class="fundraising-panel">
 				<div class="progress-bar">
 					<div class="progress" style="width: <?php echo $percentage; ?>%;"></div>
