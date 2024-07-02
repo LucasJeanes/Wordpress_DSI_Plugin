@@ -1,43 +1,79 @@
 <?php
 /*
 Plugin Name: Donation Ticker
-Description: A simple donation ticker with progress bar.
+Description: A plugin to display donation progress.
 Version: 1.0
 Author: Your Name
 */
 
-// Exit if accessed directly
-if (!defined('ABSPATH')) {
-    exit;
+// Database credentials for the donations database
+define('database_NAME', 'donations');
+define('database_USER', 'root');
+define('database_PASSWORD', '');
+define('database_HOST', 'localhost');
+
+// Connect to the donations database
+function connect_to_donations_db() {
+		$connection = new mysqli(database_HOST, database_USER, database_PASSWORD, database_NAME);
+		if ($connection->connect_error) {
+			die("Connection failed: " . $connection->connect_error);
+		}
+	return $connection;
 }
 
-// Enqueue scripts and styles
-function dt_enqueue_scripts() {
-    wp_enqueue_style('dt-style', plugins_url('css/style.css', __FILE__));
-    wp_enqueue_script('dt-script', plugins_url('js/script.js', __FILE__), array('jquery'), null, true);
+// Fetch total donations
+function get_total_donations() {
+		$connection = connect_to_donations_db();
+		$sql = "SELECT SUM(amount) AS total FROM donation_entries";
+		$result = $connection->query($sql);
+
+	if (!$result) {
+			error_log("Database query failed: " . $connection->error);
+			return 0;
+		}
+
+		$row = $result->fetch_assoc();
+		$connection->close();
+		return $row['total'] ?? 0; // Use null coalescing to handle null values
 }
-add_action('wp_enqueue_scripts', 'dt_enqueue_scripts');
+
+// Display the donation ticker
+function display_donation_ticker() {
+	 $total_donations = get_total_donations();
+	 $goal = 5000; // Example goal
+	 $percentage = ($total_donations / $goal) * 100;
+	if ($percentage > 100) $percentage = 100;
+	
+	ob_start();
+		?>
+		<div id="donation-ticker">
+			<h3>Ice Cream Fundays</h3>
+			<container class="fundraising-panel">
+				<div class="progress-bar">
+					<div class="progress" style="width: <?php echo $percentage; ?>%;"></div>
+				</div>
+				<div class="donation-info">
+						Raised: <?php echo number_format($total_donations, 2); ?>
+						Goal: <?php echo number_format($goal, 2); ?>
+				</div>
+			</container>
+		</div>
+		<?php
+		return ob_get_clean();
+}
 
 // Shortcode to display the donation ticker
-function dt_donation_ticker($atts) {
-    $atts = shortcode_atts(
-        array(
-            'raised' => 0,
-            'target' => 1000,
-        ), $atts, 'donation_ticker'
-    );
-
-    ob_start();
-    ?>
-    <div id="donation-ticker">
-        <div class="progress-bar">
-            <div class="progress" style="width: <?php echo ($atts['raised'] / $atts['target']) * 100; ?>%;"></div>
-        </div>
-        <div class="donation-info">
-            Raised: $<span id="dt-raised"><?php echo $atts['raised']; ?></span> / $<span id="dt-target"><?php echo $atts['target']; ?></span>
-        </div>
-    </div>
-    <?php
-    return ob_get_clean();
+function donation_ticker_shortcode() {
+		return display_donation_ticker();
 }
-add_shortcode('donation_ticker', 'dt_donation_ticker');
+add_shortcode('donation_ticker', 'donation_ticker_shortcode');
+
+// Enqueue styles and scripts
+function donation_ticker_assets() {
+		wp_enqueue_style('donation-ticker-styles', plugin_dir_url(__FILE__) . 'css/style.css');
+		wp_enqueue_script('donation-ticker-scripts', plugin_dir_url(__FILE__) . 'js/script.js', array('jquery'), null, true);
+		wp_localize_script('donation-ticker-scripts', 'donation_ticker_data', array('initialRaised' => get_total_donations(),
+		));
+}
+add_action('wp_enqueue_scripts', 'donation_ticker_assets');
+?>
