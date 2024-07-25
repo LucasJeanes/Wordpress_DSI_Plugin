@@ -3,14 +3,10 @@
 Plugin Name: Donation Ticker
 Description: A plugin to display donation progress.
 Version: 1.0
-Author: Your Name
 */
 
-// Database credentials for the donations database
-define('database_NAME', 'donations');
-define('database_USER', 'root');
-define('database_PASSWORD', '');
-define('database_HOST', 'localhost');
+$db_table_name = 'donation_entries';
+$db_column_name = 'amount';
 
 add_action('admin_menu', 'dsiregister_donation_bar_settings_page');
 
@@ -32,13 +28,20 @@ function dsiregister_donation_bar_settings_page() {
 function dsi_register_settings() {
     register_setting('dsi-donation-bar-settings-group', 'dsi_fundraiser_name');
     register_setting('dsi-donation-bar-settings-group', 'dsi_target_amount');
+	register_setting('dsi-donation-bar-settings-group', 'database_NAME');
+	register_setting('dsi-donation-bar-settings-group', 'database_USER');
+	register_setting('dsi-donation-bar-settings-group', 'database_PASSWORD');
+	register_setting('dsi-donation-bar-settings-group', 'database_HOST');
+	register_setting('dsi-donation-bar-settings-group', 'db_table_name');
+	register_setting('dsi-donation-bar-settings-group', 'db_column_name');
+	register_setting('dsi-donation-bar-settings-group', 'db_keyword');
 }
 
 // Settings page content
 function dsi_donation_bar_settings_page() {
     ?>
     <div class="wrap">
-        <h1>DSI Donation Bar Settings</h1>
+        <h1>Down Syndrome Ireland's Donation Bar Settings</h1>
         <form method="post" action="options.php">
             <?php settings_fields('dsi-donation-bar-settings-group'); ?>
             <?php do_settings_sections('dsi-donation-bar-settings-group'); ?>
@@ -51,6 +54,34 @@ function dsi_donation_bar_settings_page() {
                     <th scope="row">Target Amount</th>
                     <td><input type="number" name="dsi_target_amount" value="<?php echo esc_attr(get_option('dsi_target_amount')); ?>" /></td>
                 </tr>
+				<tr valign="top">
+                    <th scope="row">Database - Name</th>
+                    <td><input type="text" name="database_NAME" value="<?php echo esc_attr(get_option('database_NAME')); ?>" /></td>
+                </tr>
+				<tr valign="top">
+                    <th scope="row">Database - Username</th>
+                    <td><input type="text" name="database_USER" value="<?php echo esc_attr(get_option('database_USER')); ?>" /></td>
+                </tr>
+				<tr valign="top">
+                    <th scope="row">Database - Password</th>
+                    <td><input type="password" name="database_PASSWORD" value="<?php echo esc_attr(get_option('database_PASSWORD')); ?>" /></td>
+                </tr>
+				<tr valign="top">
+                    <th scope="row">Database - Link Address</th>
+                    <td><input type="text" name="database_HOST" value="<?php echo esc_attr(get_option('database_HOST')); ?>" /></td>
+                </tr>
+				<tr valign="top">
+                    <th scope="row">Database - Donations Table Name</th>
+                    <td><input type="text" name="db_table_name" value="<?php echo esc_attr(get_option('db_table_name')); ?>" /></td>
+                </tr>
+				<tr valign="top">
+                    <th scope="row">Database - Donations Amount Column Name</th>
+                    <td><input type="text" name="db_column_name" value="<?php echo esc_attr(get_option('db_column_name')); ?>" /></td>
+                </tr>
+				<tr valign="top">
+                    <th scope="row">Database - Donations by filtered keyword</th>
+                    <td><input type="text" name="db_keyword" value="<?php echo esc_attr(get_option('db_keyword')); ?>" /></td>
+                </tr>
             </table>
             <?php submit_button(); ?>
         </form>
@@ -60,17 +91,31 @@ function dsi_donation_bar_settings_page() {
 
 // Connect to the donations database
 function connect_to_donations_db() {
-		$connection = new mysqli(database_HOST, database_USER, database_PASSWORD, database_NAME);
-		if ($connection->connect_error) {
-			die("Connection failed: " . $connection->connect_error);
-		}
+	$database_HOST = get_option('database_HOST', 'localhost');
+	$database_USER = get_option('database_USER', 'root');
+	$database_PASSWORD = get_option('database_PASSWORD', '');
+	$database_NAME = get_option('database_NAME', 'donations');
+	
+	//$connection = new mysqli(database_HOST, database_USER, database_PASSWORD, database_NAME);
+	$connection = new mysqli($database_HOST, $database_USER, $database_PASSWORD, $database_NAME);
+	if ($connection->connect_error) {
+		die("Connection failed: " . $connection->connect_error);
+	}
 	return $connection;
 }
 
 // Fetch total donations
 function get_total_donations() {
+	$db_keyword = get_option('db_keyword', '');
+	$db_table_name = get_option('db_table_name', 'donation_entries');
+	$db_column_name = get_option('db_column_name', 'amount');
+	
 		$connection = connect_to_donations_db();
-		$sql = "SELECT SUM(amount) AS total FROM donation_entries";
+	if ($db_keyword) {
+		$sql = sprintf("SELECT SUM(%s) AS total FROM %s WHERE fundraiser_type = '%s'", $db_column_name, $db_table_name, $db_keyword);
+	} else {
+		$sql = sprintf("SELECT SUM(%s) AS total FROM %s", $db_column_name, $db_table_name);
+	}
 		$result = $connection->query($sql);
 
 	if (!$result) {
@@ -85,29 +130,32 @@ function get_total_donations() {
 
 // Display the donation ticker
 function display_donation_ticker() {
-	$fundraiser_name = get_option('dsi_fundraiser_name', 'Default Fundraiser');
-	$total_donations = get_total_donations();
-	$goal = get_option('dsi_target_amount', 5000); // Default goal is 5000 if not set
-	$percentage = ($total_donations / $goal) * 100;
-	if ($percentage > 100) $percentage = 100;
-	
-	ob_start();
-		?>
-		<div id="donation-ticker">
-		<h3><?php echo esc_html($fundraiser_name); ?></h3>
+    $fundraiser_name = get_option('dsi_fundraiser_name', 'Default Fundraiser');
+    $total_donations = get_total_donations();
+    $goal = get_option('dsi_target_amount', 5000); // Default goal is 5000 if not set
+    $percentage = ($total_donations / $goal) * 100;
+    if ($percentage > 100) $percentage = 100;
+
+    ob_start();
+    ?>
+    <div id="donation-ticker">
+		<div class="donation-title">
+			<h3><?php echo esc_html($fundraiser_name); ?></h3>
+		</div>
 			<container class="fundraising-panel">
 				<div class="progress-bar">
 					<div class="progress" style="width: <?php echo $percentage; ?>%;"></div>
 				</div>
 				<div class="donation-info">
-						Raised: <?php echo number_format($total_donations, 2); ?>
-						Goal: <?php echo number_format($goal, 2); ?>
+					<div class="raised">Raised: <?php echo number_format($total_donations, 2); ?></div>
+					<div class="goal">Goal: <?php echo number_format($goal, 2); ?></div>
 				</div>
 			</container>
 		</div>
-		<?php
-		return ob_get_clean();
+    <?php
+    return ob_get_clean();
 }
+
 
 // Shortcode to display the donation ticker
 function donation_ticker_shortcode() {

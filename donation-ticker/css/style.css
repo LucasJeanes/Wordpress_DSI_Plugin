@@ -2,20 +2,42 @@
     width: 100%;
     max-width: 500px;
     margin: 20px auto;
-    text-align: center;
+    border: 2px solid #dcdcde;
+    padding: 10px;
+}
+
+.donation-title {
+	text-align: center;
 }
 .progress-bar {
     width: 100%;
     background-color: #e0e0e0;
     border-radius: 5px;
+    margin-bottom: 10px;
 }
+
 .progress {
     height: 30px;
     background-color: #4caf50;
     width: 0; /* This should be dynamically updated */
     border-radius: 5px 0 0 5px;
 }
+
 .donation-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Ensures items are centered vertically */
     margin-top: 10px;
     font-size: 16px;
+    width: 100%; /* Ensures the donation-info spans the full width */
+}
+
+.raised {
+    text-align: left;
+    flex-grow: 1; /* Allows it to grow and take available space */
+}
+
+.goal {
+    text-align: right;
+    flex-grow: 1; /* Allows it to grow and take available space */
 }
