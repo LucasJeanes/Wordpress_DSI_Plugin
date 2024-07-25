@@ -24,8 +24,24 @@ These plugins were created to improve some of the technical features on the Down
 - Once the installation is complete, click on the "Activate Plugin" button.
   
 **6: Configure the Plugin**
-- After activation, you will need to configure the plugin inputs.
 - Navigate to the plugin settings page, which is found in the admin dashboard.
+- ![image](https://github.com/user-attachments/assets/ec92cafd-a10f-496d-bc8e-63cfbf451815)
+- For setting up the donation ticker, fill in the following information:
+    - **Fundraiser Name**: Title of the fundraiser
+    - **Target Amount**: Target financial goal for the fundraising event
+    - **Database - Username**: Login username for database connection
+    - **Database - Password**: Login password for database connection
+    - **Database - Link Address**: URL endpoint for database eg. 192.168.0.1, 127.0.0.1, localhost
+    - **Database - Donations Table Name**: Name of the table which stores the fundraiser donations
+    - **Database - Donations Amount Column Name**: Name of the column in the fundraiser table which holds the numerical data to sum
+    - **Database - Donations by filtered keyword**: If multiple fundraising event donations are stored in the same table, populate with keyword to isolate. If empty, donation ticker will sum ALL donations in table.
+
+    Example database config below:
+     - ![Untitled Diagram(3)](https://github.com/user-attachments/assets/c8279615-6e64-4275-be3c-a1c756719790)
+
+
+
+
 - These inputs are various things such as a corporate partner name, logo, description, and external link.
 
 **7: Display Plugin on Page**
