@@ -26,9 +26,10 @@ These plugins were created to improve some of the technical features on the Down
 **6: Configure the Plugin**
 - After activation, you will need to configure the plugin inputs.
 - Navigate to the plugin settings page, which is found in the admin dashboard.
-- These inputs are various things such as a corporate partner name, logo, description, and external link
+- These inputs are various things such as a corporate partner name, logo, description, and external link.
 
-**Once completed correctly the plugin should look similar to this:**
-
+**7: Display Plugin on Page**
+- To see the plugin working on a page, edit a page and input a shortcode box with the following code: "corporate_partners".
+- Once this is completed publish the page and your page will display similarly to the following image.
 
 ![Corporate_Showcase](https://github.com/user-attachments/assets/ee971335-3afe-4aba-81e2-141701a32fdb)
