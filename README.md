@@ -25,23 +25,6 @@ These plugins were created to improve some of the technical features on the Down
   
 **6: Configure the Plugin**
 - Navigate to the plugin settings page, which is found in the admin dashboard.
-- ![image](https://github.com/user-attachments/assets/ec92cafd-a10f-496d-bc8e-63cfbf451815)
-- For setting up the donation ticker, fill in the following information:
-    - **Fundraiser Name**: Title of the fundraiser
-    - **Target Amount**: Target financial goal for the fundraising event
-    - **Database - Username**: Login username for database connection
-    - **Database - Password**: Login password for database connection
-    - **Database - Link Address**: URL endpoint for database eg. 192.168.0.1, 127.0.0.1, localhost
-    - **Database - Donations Table Name**: Name of the table which stores the fundraiser donations
-    - **Database - Donations Amount Column Name**: Name of the column in the fundraiser table which holds the numerical data to sum
-    - **Database - Donations by filtered keyword**: If multiple fundraising event donations are stored in the same table, populate with keyword to isolate. If empty, donation ticker will sum ALL donations in table.
-
-    Example database config below:
-     - ![Untitled Diagram(3)](https://github.com/user-attachments/assets/c8279615-6e64-4275-be3c-a1c756719790)
-
-
-
-
 - These inputs are various things such as a corporate partner name, logo, description, and external link.
 
 **7: Display Plugin on Page**
@@ -49,3 +32,28 @@ These plugins were created to improve some of the technical features on the Down
 - Once this is completed publish the page and your page will display similarly to the following image.
 
 ![Corporate_Showcase](https://github.com/user-attachments/assets/ee971335-3afe-4aba-81e2-141701a32fdb)
+
+## Donation Ticker Plugin
+
+**Repeat steps 1-5 from the corporate showcase plugin instructions**
+
+**6: Configure the Plugin**
+- Navigate to the plugin settings page, which is found in the admin dashboard.
+- Fill in the following information:
+    - **Fundraiser Name**: Title of the fundraiser
+    - **Target Amount**: Target financial goal for the fundraising event
+    - **Database - Username**: Login username for database connection
+    - **Database - Password**: Login password for database connection
+    - **Database - Link Address**: URL endpoint for database eg. 192.168.0.1, 127.0.0.1, localhost
+    - **Database - Donations Table Name**: Name of the table that stores the fundraiser donations
+    - **Database - Donations Amount Column Name**: Name of the column in the fundraiser table which holds the numerical data to sum
+    - **Database - Donations by filtered keyword**: If multiple fundraising event donations are stored in the same table, populate with a keyword to isolate. If empty, the donation ticker will sum up ALL donations in the table.
+  ![image](https://github.com/user-attachments/assets/ec92cafd-a10f-496d-bc8e-63cfbf451815)
+- Example database config:
+
+![Untitled Diagram(3)](https://github.com/user-attachments/assets/c8279615-6e64-4275-be3c-a1c756719790)
+
+**7: Display Plugin on Page**
+- To see the plugin working on a page, edit a page and input a shortcode box with the following code: "donation_ticker".
+- Once this is completed publish the page and your page will display similarly to the following image.
+
