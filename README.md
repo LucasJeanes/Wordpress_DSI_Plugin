@@ -56,4 +56,5 @@ These plugins were created to improve some of the technical features on the Down
 **7: Display Plugin on Page**
 - To see the plugin working on a page, edit a page and input a shortcode box with the following code: "donation_ticker".
 - Once this is completed publish the page and your page will display similarly to the following image.
+![image](https://github.com/user-attachments/assets/dbb9cfc4-869e-4c94-a993-0bf9fd17e03e)
 
